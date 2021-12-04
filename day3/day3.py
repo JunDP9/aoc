@@ -5,12 +5,9 @@ def input_file(filename):
         for line in file: # loop over each line
             coefficients.append(str(line).strip()) # parse them in some way
     return coefficients
-
 lines = input_file('day3_input.txt')
 
 my_dict = {}
-
-
 for idx in range(0, len(lines)):
     split_binary = list(lines[idx])
     for jdx in range(0, len(split_binary)):
@@ -31,10 +28,3 @@ epsilon_num = int(epsilon_rate, 2)
 
 print(epsilon_num*gamma_num)
 
-
-#gamma_num = int(gamma_rate, 2)
-#print(gamma_num)
-#gamma_num_back2bin = bin(gamma_num)
-#epsilon_rate = ~gamma_num_back2bin
-#epsilon_num = int(epsilon_rate)
-#print(epsilon_num)
