@@ -38,18 +38,15 @@ def prepare_array(board_size, input_list):
 
     return [boards, boards_amt_bingo]   
 
-boards_array = prepare_array(5, lines)[0]
-boards_amt_bingo = prepare_array(5, lines)[1]
-
 def check_bingo(board):
-    board_size = 5 - 1
-    board_col_counter = board_size + 1
+    board_size = 5 
+    board_col_counter = board_size 
     for idx in range(0, len(board)):
-        if board_col_counter  > board_size: 
-            row = (board[idx:board_size+1+idx])
+        if board_col_counter  > board_size-1: 
+            row = (board[idx:board_size+idx])
             col = []
-            for kdx in range(0, (board_size+1)):
-                col.append(board[math.floor(idx/(board_size+1))+(kdx*(board_size+1))])
+            for kdx in range(0, (board_size)):
+                col.append(board[math.floor(idx/(board_size))+(kdx*(board_size))])
             flat_row_list = [item for sublist in row for item in sublist[1:]]
             flat_col_list = [item for sublist in col for item in sublist[1:]]
             if 0 not in flat_row_list or 0 not in flat_col_list:
@@ -81,7 +78,8 @@ def main(bingo_numbers, boards_array, boards_amt_bingo):
                             calculate_final(bingo_numbers[idx], value)
                             return
 
-main(bingo_numbers, boards_array, boards_amt_bingo)
+prepared_input = prepare_array(5, lines)
+main(bingo_numbers, prepared_input[0], prepared_input[1])
                 
 
     
