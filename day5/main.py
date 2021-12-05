@@ -1,8 +1,5 @@
 import numpy as np
-import sys
 
-
-# np.set_printoptions(threshold=sys.maxsize)
 
 def input_file(filename):
     coefficients = []
@@ -39,24 +36,70 @@ def count_sum_larger_or_equal_to(grid, value):
     print(sum)
 
 
+def checkDiagonal(x1,y1,x2,y2):
+    final_coordinates = [x2, y2]
+    for idx in range(0, 1000):
+        left_up = [x1-idx, y1-idx]
+        left_down = [x1+idx, y1-idx]
+        right_up = [x1-idx, y1+idx]
+        right_down = [x1+idx, y1+idx]
+
+        if final_coordinates == left_up:
+            return 'LEFT_UP'
+        if final_coordinates == left_down:
+            return 'LEFT_DOWN'
+        if final_coordinates == right_up:
+            return 'RIGHT_UP'
+        if final_coordinates == right_down:
+            return 'RIGHT_DOWN'
+    return 'NONE'
+
+
+def draw_line_diagonal(grid, x1, y1, x2, y2, diagonality_command):
+    print(diagonality_command)
+    final_coordinates = [x2,y2]
+    starting_coordinates = [x1,y1]
+    for idx in range(0, 1000):
+        if diagonality_command == 'LEFT_UP':
+            grid[y1-idx][x1-idx] += 1
+            starting_coordinates = [x1-idx, y1-idx]
+        if diagonality_command == 'LEFT_DOWN':
+            grid[y1-idx][x1+idx] += 1
+            starting_coordinates = [x1+idx, y1-idx]
+        if diagonality_command == 'RIGHT_UP':
+            grid[y1+idx][x1-idx] += 1
+            starting_coordinates = [x1-idx, y1+idx]
+        if diagonality_command == 'RIGHT_DOWN':
+            grid[y1+idx][x1+idx] += 1
+            starting_coordinates = [x1+idx, y1+idx]
+        if starting_coordinates == final_coordinates:
+            return
+
+
 def draw_line(grid, command):
     # adjust row, same y value
-    if command[1] == command[3]:
-        list_y_values = [int(command[0]), int(command[2])]
-        grid[int(command[1])][min(list_y_values):max(list_y_values) + 1] += 1
-    # adjust column, same x value
-    if command[0] == command[2]:
-        list_y_values = [int(command[1]), int(command[3])]
-        grid[:, int(command[0])][min(list_y_values):max(list_y_values) + 1] += 1
+    x1 = int(command[0])
+    y1 = int(command[1])
+    x2 = int(command[2])
+    y2 = int(command[3])
+    diagonality_command = checkDiagonal(x1, y1, x2, y2)
+
+    if y1 == y2:
+        list_x_values = [x1, x2]
+        grid[y1][min(list_x_values):max(list_x_values) + 1] += 1
+
+    if x1 == x2:
+        list_x_values = [y1, y2]
+        grid[:, x1][min(list_x_values):max(list_x_values) + 1] += 1
+
+    if diagonality_command is not 'NONE':
+        draw_line_diagonal(grid, x1, y1, x2, y2, diagonality_command)
 
 
 def main():
     lines = input_file('input.txt')
-    # assume grid is 1000x1000
-    # print(get_largest_x_y_values(lines))
     grid = initialize_grid(1000)
     for command in lines:
-        # print(command.split())
         draw_line(grid, command.split())
     count_sum_larger_or_equal_to(grid, 2)
     print(grid)
