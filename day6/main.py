@@ -25,20 +25,15 @@ def main():
     line = input_file('input.txt')
     mylist = [int(x) for x in line.split(' ')]
     mydict = {}
-    mydict[(-1)] = mylist.count(-1)
-    mydict[0] = mylist.count(0)
-    mydict[1] = mylist.count(1)
-    mydict[2] = mylist.count(2)
-    mydict[3] = mylist.count(3)
-    mydict[4] = mylist.count(4)
-    mydict[5] = mylist.count(5)
-    mydict[6] = mylist.count(6)
-    mydict[7] = mylist.count(7)
-    mydict[8] = mylist.count(8)
+    init_dict(mydict, mylist)
 
     print(sum(mydict.values()))
     grow(mydict, mylist, 256)
     print(sum(mydict.values()))
 
+
+def init_dict(mydict, mylist):
+    for idx in range(-1, 9):
+        mydict[idx] = mylist.count(idx)
 
 main()
