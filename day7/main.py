@@ -1,3 +1,4 @@
+import math
 import operator
 def input_file(filename):
     coefficients = []
@@ -14,12 +15,9 @@ def getLowestValue(mydict):
     for key, value in mydict.items():
         sums.append(sum(value))
     min_index, min_value = min(enumerate(sums), key=operator.itemgetter(1))
-    max_index, max_value = max(enumerate(sums), key=operator.itemgetter(1))
-
+    print(sums)
     print(min_index)
     print(min_value)
-    print(max_index)
-    print(max_value)
     pass
 
 
@@ -27,8 +25,11 @@ def main():
     line = input_file('input2.txt')
     mylist = [int(x) for x in line.split(' ')]
     mydict = {}
-    calc_dict(mydict, mylist)
+    # calc_dict(mydict, mylist)
+    calc_dict_part_2(mydict, mylist)
+    print(mydict)
     getLowestValue(mydict)
+
 
 
 def calc_dict(mydict, mylist):
@@ -39,5 +40,15 @@ def calc_dict(mydict, mylist):
             else:
                 mydict['position '+str(idx)] = []
                 mydict['position '+str(idx)].append(abs(mylist[idx]-mylist[jdx]))
+
+def calc_dict_part_2(mydict, mylist):
+    for idx in range(0, len(mylist)):
+        for jdx in range(0, len(mylist)):
+            n = abs((mylist[jdx] - idx))
+            if 'position '+str(idx) in mydict:
+                mydict['position '+str(idx)].append(((n*n)+n)/2)
+            else:
+                mydict['position '+str(idx)] = []
+                mydict['position '+str(idx)].append(((n*n)+n)/2)
 
 main()
