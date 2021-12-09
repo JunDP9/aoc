@@ -149,7 +149,7 @@ def part_two(numbers):
     print(final_amount)
 
 def main():
-    list = input_file('input.txt')
+    list = input_file('input1.txt')
     part_two(list)
 
 
