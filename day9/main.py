@@ -13,9 +13,9 @@ def part_one(my_list):
         for jdx in range(0, len(my_list[idx])):
             # left right top down
             neighbors = get_neighbors(idx, jdx, my_list)
-            if int(my_list[idx][jdx]) < neighbors[0] and int(my_list[idx][jdx]) < neighbors[1] and int(
-                    my_list[idx][jdx]) < neighbors[2] and int(my_list[idx][jdx]) < neighbors[3]:
-                sum += (int(my_list[idx][jdx]) + 1)
+            current_position = int(my_list[idx][jdx])
+            if current_position < min(neighbors):
+                sum += (current_position + 1)
                 lowest_positions.append((idx, jdx))
     print(sum)
     return lowest_positions
