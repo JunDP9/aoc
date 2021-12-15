@@ -3,6 +3,7 @@ from collections import Counter
 from operator import itemgetter
 import time
 
+
 def input_file(filename):
     start_string = ''
     my_dict = {}
@@ -22,10 +23,7 @@ def input_file(filename):
 def part_one(inputs):
     starting_string = list(inputs[0])
     my_dict = inputs[1]
-    max_count, max_key, min_count, min_key = compute_v1(my_dict, starting_string, 10)
-    print(min_key, min_count)
-    print(max_key, max_count)
-    print(max_count - min_count)
+    compute_v1(my_dict, starting_string, 10)
 
 
 def compute_v1(my_dict, starting_string, steps):
@@ -38,55 +36,59 @@ def compute_v1(my_dict, starting_string, steps):
                 starting_string.insert(idx + add_counter, my_dict[char_combo])
                 add_counter += 1
 
+    print_max_substracted_by_min(starting_string)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+
+def print_max_substracted_by_min(starting_string):
     counter = Counter(starting_string)
     min_key, min_count = min(counter.items(), key=itemgetter(1))
     max_key, max_count = max(counter.items(), key=itemgetter(1))
-    print("--- %s seconds ---" % (time.time() - start_time))
-    return max_count, max_key, min_count, min_key
+    print(min_key, min_count)
+    print(max_key, max_count)
+    print(max_count - min_count)
 
 
-def compute_v2(inter_total_dict, total_dict, comp_dict, steps):
+def compute_v2(char_amount_dict, combo_to_single_char_dict, empty_exponential_total_dict, exponential_total_dict,
+               combo_to_offspring_dict, steps):
     start_time = time.time()
-    # print(comp_dict)
     for step in range(0, steps):
-        empty_total_dict = inter_total_dict.copy()
-        for key,value in total_dict.items():
-            empty_total_dict[comp_dict[key][0]] += value
-            empty_total_dict[comp_dict[key][1]] += value
-            # inter_total_dict[key] = 0
-        total_dict = (empty_total_dict)
+        empty_total_dict = empty_exponential_total_dict.copy()
+        for key, value in exponential_total_dict.items():
+            empty_total_dict[combo_to_offspring_dict[key][0]] += value
+            empty_total_dict[combo_to_offspring_dict[key][1]] += value
+            char_amount_dict[combo_to_single_char_dict[key]] += value
 
-    # print(total_dict)
-    final_dict = make_char_dict(total_dict)
-    # print(final_dict)
+        exponential_total_dict = empty_total_dict
 
-    counter = Counter(final_dict)
-    min_key, min_count = min(counter.items(), key=itemgetter(1))
-    max_key, max_count = max(counter.items(), key=itemgetter(1))
+    print_max_substracted_by_min(char_amount_dict)
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    return max_count/2, max_key, min_count/2, min_key
 
-
-def make_char_dict(total_dict):
-    final_dict = {}
+def make_char_dict(total_dict, starting_string):
+    char_dict = {}
     for key, value in total_dict.items():
         split_char_one = list(key)[0]
         split_char_two = list(key)[1]
-        if split_char_one in final_dict:
-            final_dict[split_char_one] += value
-        if split_char_two in final_dict:
-            final_dict[split_char_two] += value
-        if split_char_one not in final_dict:
-            final_dict[split_char_one] = value
-        if split_char_two not in final_dict:
-            final_dict[split_char_two] = value
-    return final_dict
+        if split_char_one not in char_dict:
+            char_dict[split_char_one] = 0
+        if split_char_two not in char_dict:
+            char_dict[split_char_two] = 0
+        if value not in char_dict:
+            char_dict[value] = 0
+
+    for char in starting_string:
+        if char in char_dict:
+            char_dict[char] += 1
+        else:
+            print('not in total dict yet')
+
+    return char_dict
 
 
 def make_comp(my_dict):
-    comp_dict={}
-    total_dict={}
+    comp_dict = {}
+    total_dict = {}
     for key, value in my_dict.items():
         char_combo = list(key)
         char_combo_child_one = char_combo[0] + value
@@ -103,28 +105,26 @@ def make_comp(my_dict):
 
 def part_two(inputs):
     starting_string = list(inputs[0])
-    my_dict = inputs[1]
-    extra_dicts = make_comp(my_dict)
+    combo_to_char_dict = inputs[1]
+    extra_dicts = make_comp(combo_to_char_dict)
     comp_dict = extra_dicts[0]
     total_dict = extra_dicts[1]
-
+    char_dict = make_char_dict(combo_to_char_dict, starting_string)
     inter_total_dict = total_dict.copy()
     for idx in range(1, len(starting_string)):
         char_combo = (starting_string[idx - 1] + starting_string[idx])
         if char_combo in total_dict:
-            total_dict[char_combo] = 1
-    char_dict = make_char_dict(total_dict)
-    # print(char_dict)
-    max_count, max_key, min_count, min_key =  compute_v2(inter_total_dict, total_dict, comp_dict, 40)
-    print(min_key, min_count)
-    print(max_key, max_count)
-    print(math.ceil((max_count - min_count)))
+            total_dict[char_combo] += 1
+
+    compute_v2(char_dict, combo_to_char_dict, inter_total_dict, total_dict, comp_dict, 40)
 
 
 def main():
-    inputs = input_file('input2.txt')
+    inputs = input_file('input.txt')
     # part_one(inputs)
     part_two(inputs)
+    # 3605805746074
+    # 3816397135460
 
 
 main()
