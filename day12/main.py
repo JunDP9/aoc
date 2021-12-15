@@ -67,8 +67,6 @@ def small_cave_counter(visited_amount):
     filtered_visited_amount_by_value = {k: v for (k, v) in filtered_visited_amount_by_lower.items() if v > 1}
     return True if len(filtered_visited_amount_by_value) == 0 else False
 
-def start_appears_only_once(current_route_counter):
-    return current_route_counter['start'] < 2
 
 def part_one(nodes):
     possible_routes = []
